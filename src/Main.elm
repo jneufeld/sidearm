@@ -104,6 +104,36 @@ init =
                     "suit": "Club"
                 }
                 ]
+            },
+            {
+                "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+            },
+            {
+                "Check": "YRXyD5Gm275t27NjTtcPtQ"
+            },
+            {
+                "Turn": {
+                "rank": "Nine",
+                "suit": "Spade"
+                }
+            },
+            {
+                "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+            },
+            {
+                "Check": "YRXyD5Gm275t27NjTtcPtQ"
+            },
+            {
+                "River": {
+                "rank": "Four",
+                "suit": "Spade"
+                }
+            },
+            {
+                "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+            },
+            {
+                "Check": "YRXyD5Gm275t27NjTtcPtQ"
             }
         ]
       }"""
@@ -391,6 +421,28 @@ flopText card1 card2 card3 =
     "Flop: " ++ cardText card1 ++ " " ++ cardText card2 ++ " " ++ cardText card3
 
 
+turnDecoder : Decoder HandAction
+turnDecoder =
+    map Turn
+        (field "Turn" cardDecoder)
+
+
+turnText : Card -> String
+turnText card =
+    "Turn: " ++ cardText card
+
+
+riverDecoder : Decoder HandAction
+riverDecoder =
+    map River
+        (field "River" cardDecoder)
+
+
+riverText : Card -> String
+riverText card =
+    "River: " ++ cardText card
+
+
 preFlopDecoder : Decoder HandAction
 preFlopDecoder =
     succeed PreFlop
@@ -402,6 +454,8 @@ type HandAction
     | PlayerCheck Check
     | PlayerCall Call
     | Flop Card Card Card
+    | Turn Card
+    | River Card
     | PreFlop
 
 
@@ -415,6 +469,8 @@ actionDecoder =
         , checkDecoder
         , callDecoder
         , flopDecoder
+        , turnDecoder
+        , riverDecoder
         , preFlopDecoder
         ]
 
@@ -436,6 +492,12 @@ actionText action =
 
         Flop card1 card2 card3 ->
             flopText card1 card2 card3
+
+        Turn card ->
+            turnText card
+
+        River card ->
+            riverText card
 
         PreFlop ->
             "Dealer deals pocket cards"
