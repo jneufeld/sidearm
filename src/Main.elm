@@ -2,8 +2,8 @@ module Main exposing (..)
 
 import Browser
 import Html exposing (Html, button, div, text)
+import Html.Attributes exposing (action)
 import Html.Events exposing (onClick)
-
 import Json.Decode as Decode
     exposing
         ( Decoder
@@ -12,10 +12,13 @@ import Json.Decode as Decode
         , index
         , int
         , list
+        , map
         , map2
+        , oneOf
         , string
+        , succeed
         )
-import Html.Attributes exposing (action)
+
 
 
 -- MAIN
@@ -57,15 +60,41 @@ init =
                     "integer": 10
                 }
                 ]
+            },
+            "PreFlop",
+            {
+                "Fold": "uUr5VW+nLr7e9CueUrQ47g"
+            },
+            {
+                "Fold": "Gmzktdi7SyRTsixKUD1NIw"
+            },
+            {
+                "Fold": "yRCsk8TI2PAKL9gB4LG+/A"
+            },
+            {
+                "Fold": "Bc/GiC55f7zCtQkHe/XPtQ"
+            },
+            {
+                "Call": [
+                "c2tiA/SMUK+T0PsP2rCOGA",
+                {
+                    "fraction": 0,
+                    "integer": 5
+                }
+                ]
+            },
+            {
+                "Check": "YRXyD5Gm275t27NjTtcPtQ"
             }
         ]
       }"""
 
 
 type alias Amount =
-    { integer: Int
-    , fraction: Int
+    { integer : Int
+    , fraction : Int
     }
+
 
 amountDecoder : Decoder Amount
 amountDecoder =
@@ -73,37 +102,135 @@ amountDecoder =
         (field "integer" int)
         (field "fraction" int)
 
+
 amountText : Amount -> String
 amountText amount =
-    "$" ++ (String.fromInt amount.integer) ++ "." ++ (String.fromInt amount.fraction)
+    "$" ++ String.fromInt amount.integer ++ "." ++ String.fromInt amount.fraction
+
 
 type alias Post =
-    { playerId: String
-    , amount: Amount
+    { playerId : String
+    , amount : Amount
     }
 
-postDecoder : Decoder Post
+
+postDecoder : Decoder HandAction
 postDecoder =
-    map2 Post
-        (field "Post" (index 0 string))
-        (field "Post" (index 1 amountDecoder))
+    map PlayerPost
+        (map2 Post
+            (field "Post" (index 0 string))
+            (field "Post" (index 1 amountDecoder))
+        )
+
 
 postText : Post -> String
 postText post =
-    post.playerId ++ " posts " ++ (amountText post.amount)
+    post.playerId ++ " posts " ++ amountText post.amount
 
 
-actionDecoder : Decoder Post
+type alias Fold =
+    { playerId : String }
+
+
+foldDecoder : Decoder HandAction
+foldDecoder =
+    map PlayerFold (map Fold (field "Fold" string))
+
+
+foldText : Fold -> String
+foldText fold =
+    fold.playerId ++ " folds"
+
+
+type alias Check =
+    { playerId : String }
+
+
+checkDecoder : Decoder HandAction
+checkDecoder =
+    map PlayerCheck (map Check (field "Check" string))
+
+
+checkText : Check -> String
+checkText check =
+    check.playerId ++ " checks"
+
+
+type alias Call =
+    { playerId : String
+    , amount : Amount
+    }
+
+
+callDecoder : Decoder HandAction
+callDecoder =
+    map PlayerCall
+        (map2 Call
+            (field "Call" (index 0 string))
+            (field "Call" (index 1 amountDecoder))
+        )
+
+
+callText : Call -> String
+callText call =
+    call.playerId ++ " calls" ++ amountText call.amount
+
+
+preFlopDecoder : Decoder HandAction
+preFlopDecoder =
+    succeed PreFlop
+
+
+type HandAction
+    = PlayerPost Post
+    | PlayerFold Fold
+    | PlayerCheck Check
+    | PlayerCall Call
+    | PreFlop
+
+
+actionDecoder : Decoder HandAction
 actionDecoder =
-    postDecoder
+    oneOf
+        [ -- Order is extremely important. The first decoder in the list to return a result successfully
+          -- will be the result of this function.
+          postDecoder
+        , foldDecoder
+        , checkDecoder
+        , callDecoder
+        , preFlopDecoder
+        ]
 
-actionsDecoder : Decoder (List Post)
+
+actionText : HandAction -> String
+actionText action =
+    case action of
+        PlayerPost post ->
+            postText post
+
+        PlayerFold fold ->
+            foldText fold
+
+        PlayerCheck check ->
+            checkText check
+
+        PlayerCall call ->
+            callText call
+
+        PreFlop ->
+            "PreFlop"
+
+
+actionsDecoder : Decoder (List HandAction)
 actionsDecoder =
     field "actions" (list actionDecoder)
 
-actionsText : List Post -> String
-actionsText posts =
-    String.concat (List.map postText posts)
+
+actionsText : List HandAction -> String
+actionsText actions =
+    String.concat (List.map actionText actions)
+
+
 
 -- UPDATE
 
@@ -158,23 +285,15 @@ view model =
     div []
         [ button [ onClick PreviousAction ] [ text "Previous Action" ]
         , button [ onClick NextAction ] [ text "Next Action" ]
-        , div [] [ text ("Action: " ++ actionText model.nextActions) ]
-        , div [] [text ("Hand: " ++ handText model.hands)]
+        , div [] [ text ("Hand: " ++ handText model.hands) ]
         ]
-
-
-actionText : List String -> String
-actionText actions =
-    case actions of
-        [] ->
-            "None"
-
-        action :: _ ->
-            action
 
 
 handText : String -> String
 handText hands =
     case decodeString actionsDecoder hands of
-       Ok actions -> actionsText actions
-       Err error -> "Error decoding hands: " ++ (Decode.errorToString error)
+        Ok actions ->
+            actionsText actions
+
+        Err error ->
+            "Error decoding hands: " ++ Decode.errorToString error
