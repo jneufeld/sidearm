@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, button, div, text)
+import Html exposing (Html, button, div, li, text, ul)
 import Html.Attributes exposing (action)
 import Html.Events exposing (onClick)
 import Json.Decode as Decode
@@ -103,9 +103,19 @@ amountDecoder =
         (field "fraction" int)
 
 
+
+-- TODO Format `fraction` to print two digits (e.g. "$5.20")
+-- TODO If `fraction` is 0 then don't print decimal or fraction value
+
+
 amountText : Amount -> String
 amountText amount =
     "$" ++ String.fromInt amount.integer ++ "." ++ String.fromInt amount.fraction
+
+
+
+-- TODO Set `playerId` to position (e.g. "Hijack" or "Big Blind") instead of PII-stripped string. This needs to be done
+-- for other actions as well.
 
 
 type alias Post =
@@ -173,7 +183,7 @@ callDecoder =
 
 callText : Call -> String
 callText call =
-    call.playerId ++ " calls" ++ amountText call.amount
+    call.playerId ++ " calls " ++ amountText call.amount
 
 
 preFlopDecoder : Decoder HandAction
@@ -218,7 +228,7 @@ actionText action =
             callText call
 
         PreFlop ->
-            "PreFlop"
+            "Dealer deals pocket cards"
 
 
 actionsDecoder : Decoder (List HandAction)
@@ -226,9 +236,9 @@ actionsDecoder =
     field "actions" (list actionDecoder)
 
 
-actionsText : List HandAction -> String
+actionsText : List HandAction -> List String
 actionsText actions =
-    String.concat (List.map actionText actions)
+    List.map actionText actions
 
 
 
@@ -285,15 +295,16 @@ view model =
     div []
         [ button [ onClick PreviousAction ] [ text "Previous Action" ]
         , button [ onClick NextAction ] [ text "Next Action" ]
-        , div [] [ text ("Hand: " ++ handText model.hands) ]
+        , handText model.hands
         ]
 
 
-handText : String -> String
+handText : String -> Html msg
 handText hands =
     case decodeString actionsDecoder hands of
         Ok actions ->
-            actionsText actions
+            ul []
+                (List.map (\action -> li [] [ text action ]) (actionsText actions))
 
         Err error ->
-            "Error decoding hands: " ++ Decode.errorToString error
+            div [] [ text ("Error decoding hands: " ++ Decode.errorToString error) ]
