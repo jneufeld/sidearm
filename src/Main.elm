@@ -7,13 +7,16 @@ import Html.Events exposing (onClick)
 import Json.Decode as Decode
     exposing
         ( Decoder
+        , andThen
         , decodeString
+        , fail
         , field
         , index
         , int
         , list
         , map
         , map2
+        , map3
         , oneOf
         , string
         , succeed
@@ -85,6 +88,22 @@ init =
             },
             {
                 "Check": "YRXyD5Gm275t27NjTtcPtQ"
+            },
+            {
+                "Flop": [
+                {
+                    "rank": "King",
+                    "suit": "Club"
+                },
+                {
+                    "rank": "Five",
+                    "suit": "Diamond"
+                },
+                {
+                    "rank": "Seven",
+                    "suit": "Club"
+                }
+                ]
             }
         ]
       }"""
@@ -186,6 +205,192 @@ callText call =
     call.playerId ++ " calls " ++ amountText call.amount
 
 
+type alias Card =
+    { rank : Rank
+    , suit : Suit
+    }
+
+
+type Rank
+    = Ace
+    | King
+    | Queen
+    | Jack
+    | Ten
+    | Nine
+    | Eight
+    | Seven
+    | Six
+    | Five
+    | Four
+    | Three
+    | Two
+
+
+type Suit
+    = Club
+    | Diamond
+    | Heart
+    | Spade
+
+
+rankDecoder : Decoder Rank
+rankDecoder =
+    string
+        |> andThen
+            (\r ->
+                case r of
+                    "Ace" ->
+                        succeed Ace
+
+                    "King" ->
+                        succeed King
+
+                    "Queen" ->
+                        succeed Queen
+
+                    "Jack" ->
+                        succeed Jack
+
+                    "Ten" ->
+                        succeed Ten
+
+                    "Nine" ->
+                        succeed Nine
+
+                    "Eight" ->
+                        succeed Eight
+
+                    "Seven" ->
+                        succeed Seven
+
+                    "Six" ->
+                        succeed Six
+
+                    "Five" ->
+                        succeed Five
+
+                    "Four" ->
+                        succeed Four
+
+                    "Three" ->
+                        succeed Three
+
+                    "Two" ->
+                        succeed Two
+
+                    _ ->
+                        fail ("Invalid rank: " ++ r)
+            )
+
+
+rankText : Rank -> String
+rankText rank =
+    case rank of
+        Ace ->
+            "A"
+
+        King ->
+            "K"
+
+        Queen ->
+            "Q"
+
+        Jack ->
+            "J"
+
+        Ten ->
+            "T"
+
+        Nine ->
+            "9"
+
+        Eight ->
+            "8"
+
+        Seven ->
+            "7"
+
+        Six ->
+            "6"
+
+        Five ->
+            "5"
+
+        Four ->
+            "4"
+
+        Three ->
+            "3"
+
+        Two ->
+            "2"
+
+
+suitDecoder : Decoder Suit
+suitDecoder =
+    string
+        |> andThen
+            (\s ->
+                case s of
+                    "Club" ->
+                        succeed Club
+
+                    "Diamond" ->
+                        succeed Diamond
+
+                    "Heart" ->
+                        succeed Heart
+
+                    "Spade" ->
+                        succeed Spade
+
+                    _ ->
+                        fail ("Invalid suit: " ++ s)
+            )
+
+
+suitText : Suit -> String
+suitText suit =
+    case suit of
+        Club ->
+            "c"
+
+        Diamond ->
+            "d"
+
+        Heart ->
+            "h"
+
+        Spade ->
+            "s"
+
+
+cardDecoder : Decoder Card
+cardDecoder =
+    map2 Card
+        (field "rank" rankDecoder)
+        (field "suit" suitDecoder)
+
+
+cardText : Card -> String
+cardText card =
+    rankText card.rank ++ suitText card.suit
+
+
+flopDecoder : Decoder HandAction
+flopDecoder =
+    map3 Flop
+        (field "Flop" (index 0 cardDecoder))
+        (field "Flop" (index 1 cardDecoder))
+        (field "Flop" (index 2 cardDecoder))
+
+
+flopText : Card -> Card -> Card -> String
+flopText card1 card2 card3 =
+    "Flop: " ++ cardText card1 ++ " " ++ cardText card2 ++ " " ++ cardText card3
+
+
 preFlopDecoder : Decoder HandAction
 preFlopDecoder =
     succeed PreFlop
@@ -196,6 +401,7 @@ type HandAction
     | PlayerFold Fold
     | PlayerCheck Check
     | PlayerCall Call
+    | Flop Card Card Card
     | PreFlop
 
 
@@ -208,6 +414,7 @@ actionDecoder =
         , foldDecoder
         , checkDecoder
         , callDecoder
+        , flopDecoder
         , preFlopDecoder
         ]
 
@@ -226,6 +433,9 @@ actionText action =
 
         PlayerCall call ->
             callText call
+
+        Flop card1 card2 card3 ->
+            flopText card1 card2 card3
 
         PreFlop ->
             "Dealer deals pocket cards"
