@@ -134,6 +134,19 @@ init =
             },
             {
                 "Check": "YRXyD5Gm275t27NjTtcPtQ"
+            },
+            {
+                "Show": [
+                "c2tiA/SMUK+T0PsP2rCOGA",
+                {
+                    "rank": "Five",
+                    "suit": "Heart"
+                },
+                {
+                    "rank": "Ten",
+                    "suit": "Heart"
+                }
+                ]
             }
         ]
       }"""
@@ -233,6 +246,28 @@ callDecoder =
 callText : Call -> String
 callText call =
     call.playerId ++ " calls " ++ amountText call.amount
+
+
+type alias Show =
+    { playerId : String
+    , card1 : Card
+    , card2 : Card
+    }
+
+
+showDecoder : Decoder HandAction
+showDecoder =
+    map PlayerShow
+        (map3 Show
+            (field "Show" (index 0 string))
+            (field "Show" (index 1 cardDecoder))
+            (field "Show" (index 2 cardDecoder))
+        )
+
+
+showText : Show -> String
+showText show =
+    show.playerId ++ " shows " ++ cardText show.card1 ++ cardText show.card2
 
 
 type alias Card =
@@ -453,6 +488,7 @@ type HandAction
     | PlayerFold Fold
     | PlayerCheck Check
     | PlayerCall Call
+    | PlayerShow Show
     | Flop Card Card Card
     | Turn Card
     | River Card
@@ -468,6 +504,7 @@ actionDecoder =
         , foldDecoder
         , checkDecoder
         , callDecoder
+        , showDecoder
         , flopDecoder
         , turnDecoder
         , riverDecoder
@@ -489,6 +526,9 @@ actionText action =
 
         PlayerCall call ->
             callText call
+
+        PlayerShow show ->
+            showText show
 
         Flop card1 card2 card3 ->
             flopText card1 card2 card3
