@@ -8,12 +8,14 @@ import Json.Decode as Decode
     exposing
         ( Decoder
         , decodeString
-        , map2
         , field
         , index
         , int
+        , list
+        , map2
         , string
         )
+import Html.Attributes exposing (action)
 
 
 -- MAIN
@@ -37,12 +39,25 @@ type alias Model =
 init : Model
 init =
     Model [] [ "Fold", "Raise", "Fold", "Call" ] """{
-        "Post": [
-          "c2tiA/SMUK+T0PsP2rCOGA",
-          {
-            "fraction": 0,
-            "integer": 5
-          }
+        "actions": [
+            {
+                "Post": [
+                "c2tiA/SMUK+T0PsP2rCOGA",
+                {
+                    "fraction": 0,
+                    "integer": 5
+                }
+                ]
+            },
+            {
+                "Post": [
+                "YRXyD5Gm275t27NjTtcPtQ",
+                {
+                    "fraction": 0,
+                    "integer": 10
+                }
+                ]
+            }
         ]
       }"""
 
@@ -76,6 +91,19 @@ postDecoder =
 postText : Post -> String
 postText post =
     post.playerId ++ " posts " ++ (amountText post.amount)
+
+
+actionDecoder : Decoder Post
+actionDecoder =
+    postDecoder
+
+actionsDecoder : Decoder (List Post)
+actionsDecoder =
+    field "actions" (list actionDecoder)
+
+actionsText : List Post -> String
+actionsText posts =
+    String.concat (List.map postText posts)
 
 -- UPDATE
 
@@ -147,6 +175,6 @@ actionText actions =
 
 handText : String -> String
 handText hands =
-    case decodeString postDecoder hands of
-       Ok post -> postText post
-       Err error -> "Error decoding hands"
+    case decodeString actionsDecoder hands of
+       Ok actions -> actionsText actions
+       Err error -> "Error decoding hands: " ++ (Decode.errorToString error)
