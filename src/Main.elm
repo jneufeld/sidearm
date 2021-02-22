@@ -282,24 +282,148 @@ init =
                     "suit": "Heart"
                 }
                 ]
-            },
-            {
-                "Muck": "uUr5VW+nLr7e9CueUrQ47g"
-            },
-            {
-                "Collect": [
-                "YRXyD5Gm275t27NjTtcPtQ",
-                {
-                    "fraction": 0,
-                    "integer": 167
-                }
-                ]
             }
             ],
             "game": "NoLimitHoldem",
             "stake": {
             "fraction": 0,
             "integer": 10
+            }
+        },
+        {
+            "actions": [
+            {
+                "Post": [
+                "V1tBWCstw/IRehRmisMDJg",
+                {
+                    "fraction": 0,
+                    "integer": 5
+                }
+                ]
+            },
+            {
+                "Post": [
+                "DdYt9O93aLl3XboT1BK3HQ",
+                {
+                    "fraction": 0,
+                    "integer": 10
+                }
+                ]
+            },
+            "PreFlop",
+            {
+                "Fold": "YRXyD5Gm275t27NjTtcPtQ"
+            },
+            {
+                "Raise": [
+                "7uKPjPg5l/gwaCxpksjtGQ",
+                {
+                    "fraction": 0,
+                    "integer": 40
+                },
+                {
+                    "fraction": 0,
+                    "integer": 40
+                }
+                ]
+            },
+            {
+                "Fold": "yRCsk8TI2PAKL9gB4LG+/A"
+            },
+            {
+                "Call": [
+                "Gmzktdi7SyRTsixKUD1NIw",
+                {
+                    "fraction": 0,
+                    "integer": 40
+                }
+                ]
+            },
+            {
+                "Fold": "V1tBWCstw/IRehRmisMDJg"
+            },
+            {
+                "Fold": "DdYt9O93aLl3XboT1BK3HQ"
+            },
+            {
+                "Flop": [
+                {
+                    "rank": "Queen",
+                    "suit": "Heart"
+                },
+                {
+                    "rank": "Seven",
+                    "suit": "Diamond"
+                },
+                {
+                    "rank": "Seven",
+                    "suit": "Spade"
+                }
+                ]
+            },
+            {
+                "Check": "7uKPjPg5l/gwaCxpksjtGQ"
+            },
+            {
+                "Check": "Gmzktdi7SyRTsixKUD1NIw"
+            },
+            {
+                "Turn": {
+                "rank": "Ace",
+                "suit": "Spade"
+                }
+            },
+            {
+                "Check": "7uKPjPg5l/gwaCxpksjtGQ"
+            },
+            {
+                "Check": "Gmzktdi7SyRTsixKUD1NIw"
+            },
+            {
+                "River": {
+                "rank": "Queen",
+                "suit": "Spade"
+                }
+            },
+            {
+                "Check": "7uKPjPg5l/gwaCxpksjtGQ"
+            },
+            {
+                "Bet": [
+                "Gmzktdi7SyRTsixKUD1NIw",
+                {
+                    "fraction": 0,
+                    "integer": 110
+                }
+                ]
+            },
+            {
+                "Call": [
+                "7uKPjPg5l/gwaCxpksjtGQ",
+                {
+                    "fraction": 0,
+                    "integer": 110
+                }
+                ]
+            },
+            {
+                "Show": [
+                "Gmzktdi7SyRTsixKUD1NIw",
+                {
+                    "rank": "Nine",
+                    "suit": "Diamond"
+                },
+                {
+                    "rank": "Queen",
+                    "suit": "Diamond"
+                }
+                ]
+            }
+            ],
+            "game": "NoLimitHoldem",
+            "stake": {
+                "fraction": 0,
+                "integer": 10
             }
         }
       ]"""
@@ -399,6 +523,48 @@ callDecoder =
 callText : Call -> String
 callText call =
     call.playerId ++ " calls " ++ amountText call.amount
+
+
+type alias Bet =
+    { playerId : String
+    , amount : Amount
+    }
+
+
+betDecoder : Decoder HandAction
+betDecoder =
+    JD.map PlayerBet
+        (JD.map2 Bet
+            (JD.field "Bet" (JD.index 0 JD.string))
+            (JD.field "Bet" (JD.index 1 amountDecoder))
+        )
+
+
+betText : Bet -> String
+betText bet =
+    bet.playerId ++ " bets " ++ amountText bet.amount
+
+
+type alias Raise =
+    { playerId : String
+    , amount : Amount
+    , total : Amount
+    }
+
+
+raiseDecoder : Decoder HandAction
+raiseDecoder =
+    JD.map PlayerRaise
+        (JD.map3 Raise
+            (JD.field "Raise" (JD.index 0 JD.string))
+            (JD.field "Raise" (JD.index 1 amountDecoder))
+            (JD.field "Raise" (JD.index 2 amountDecoder))
+        )
+
+
+raiseText : Raise -> String
+raiseText raise =
+    raise.playerId ++ " raises " ++ amountText raise.amount ++ " to " ++ amountText raise.total
 
 
 type alias Show =
@@ -641,6 +807,8 @@ type HandAction
     | PlayerFold Fold
     | PlayerCheck Check
     | PlayerCall Call
+    | PlayerBet Bet
+    | PlayerRaise Raise
     | PlayerShow Show
     | Flop Card Card Card
     | Turn Card
@@ -657,6 +825,8 @@ actionDecoder =
         , foldDecoder
         , checkDecoder
         , callDecoder
+        , betDecoder
+        , raiseDecoder
         , showDecoder
         , flopDecoder
         , turnDecoder
@@ -679,6 +849,12 @@ actionText action =
 
         PlayerCall call ->
             callText call
+
+        PlayerBet bet ->
+            betText bet
+
+        PlayerRaise raise ->
+            raiseText raise
 
         PlayerShow show ->
             showText show
