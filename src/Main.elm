@@ -4,22 +4,9 @@ import Browser
 import Html exposing (Html, button, div, li, ol, text)
 import Html.Attributes exposing (action)
 import Html.Events exposing (onClick)
-import Json.Decode
+import Json.Decode as JD
     exposing
         ( Decoder
-        , andThen
-        , decodeString
-        , fail
-        , field
-        , index
-        , int
-        , list
-        , map
-        , map2
-        , map3
-        , oneOf
-        , string
-        , succeed
         )
 
 
@@ -326,9 +313,9 @@ type alias Amount =
 
 amountDecoder : Decoder Amount
 amountDecoder =
-    map2 Amount
-        (field "integer" int)
-        (field "fraction" int)
+    JD.map2 Amount
+        (JD.field "integer" JD.int)
+        (JD.field "fraction" JD.int)
 
 
 
@@ -354,10 +341,10 @@ type alias Post =
 
 postDecoder : Decoder HandAction
 postDecoder =
-    map PlayerPost
-        (map2 Post
-            (field "Post" (index 0 string))
-            (field "Post" (index 1 amountDecoder))
+    JD.map PlayerPost
+        (JD.map2 Post
+            (JD.field "Post" (JD.index 0 JD.string))
+            (JD.field "Post" (JD.index 1 amountDecoder))
         )
 
 
@@ -372,7 +359,7 @@ type alias Fold =
 
 foldDecoder : Decoder HandAction
 foldDecoder =
-    map PlayerFold (map Fold (field "Fold" string))
+    JD.map PlayerFold (JD.map Fold (JD.field "Fold" JD.string))
 
 
 foldText : Fold -> String
@@ -386,7 +373,7 @@ type alias Check =
 
 checkDecoder : Decoder HandAction
 checkDecoder =
-    map PlayerCheck (map Check (field "Check" string))
+    JD.map PlayerCheck (JD.map Check (JD.field "Check" JD.string))
 
 
 checkText : Check -> String
@@ -402,10 +389,10 @@ type alias Call =
 
 callDecoder : Decoder HandAction
 callDecoder =
-    map PlayerCall
-        (map2 Call
-            (field "Call" (index 0 string))
-            (field "Call" (index 1 amountDecoder))
+    JD.map PlayerCall
+        (JD.map2 Call
+            (JD.field "Call" (JD.index 0 JD.string))
+            (JD.field "Call" (JD.index 1 amountDecoder))
         )
 
 
@@ -423,11 +410,11 @@ type alias Show =
 
 showDecoder : Decoder HandAction
 showDecoder =
-    map PlayerShow
-        (map3 Show
-            (field "Show" (index 0 string))
-            (field "Show" (index 1 cardDecoder))
-            (field "Show" (index 2 cardDecoder))
+    JD.map PlayerShow
+        (JD.map3 Show
+            (JD.field "Show" (JD.index 0 JD.string))
+            (JD.field "Show" (JD.index 1 cardDecoder))
+            (JD.field "Show" (JD.index 2 cardDecoder))
         )
 
 
@@ -467,51 +454,51 @@ type Suit
 
 rankDecoder : Decoder Rank
 rankDecoder =
-    string
-        |> andThen
+    JD.string
+        |> JD.andThen
             (\r ->
                 case r of
                     "Ace" ->
-                        succeed Ace
+                        JD.succeed Ace
 
                     "King" ->
-                        succeed King
+                        JD.succeed King
 
                     "Queen" ->
-                        succeed Queen
+                        JD.succeed Queen
 
                     "Jack" ->
-                        succeed Jack
+                        JD.succeed Jack
 
                     "Ten" ->
-                        succeed Ten
+                        JD.succeed Ten
 
                     "Nine" ->
-                        succeed Nine
+                        JD.succeed Nine
 
                     "Eight" ->
-                        succeed Eight
+                        JD.succeed Eight
 
                     "Seven" ->
-                        succeed Seven
+                        JD.succeed Seven
 
                     "Six" ->
-                        succeed Six
+                        JD.succeed Six
 
                     "Five" ->
-                        succeed Five
+                        JD.succeed Five
 
                     "Four" ->
-                        succeed Four
+                        JD.succeed Four
 
                     "Three" ->
-                        succeed Three
+                        JD.succeed Three
 
                     "Two" ->
-                        succeed Two
+                        JD.succeed Two
 
                     _ ->
-                        fail ("Invalid rank: " ++ r)
+                        JD.fail ("Invalid rank: " ++ r)
             )
 
 
@@ -560,24 +547,24 @@ rankText rank =
 
 suitDecoder : Decoder Suit
 suitDecoder =
-    string
-        |> andThen
+    JD.string
+        |> JD.andThen
             (\s ->
                 case s of
                     "Club" ->
-                        succeed Club
+                        JD.succeed Club
 
                     "Diamond" ->
-                        succeed Diamond
+                        JD.succeed Diamond
 
                     "Heart" ->
-                        succeed Heart
+                        JD.succeed Heart
 
                     "Spade" ->
-                        succeed Spade
+                        JD.succeed Spade
 
                     _ ->
-                        fail ("Invalid suit: " ++ s)
+                        JD.fail ("Invalid suit: " ++ s)
             )
 
 
@@ -599,9 +586,9 @@ suitText suit =
 
 cardDecoder : Decoder Card
 cardDecoder =
-    map2 Card
-        (field "rank" rankDecoder)
-        (field "suit" suitDecoder)
+    JD.map2 Card
+        (JD.field "rank" rankDecoder)
+        (JD.field "suit" suitDecoder)
 
 
 cardText : Card -> String
@@ -611,10 +598,10 @@ cardText card =
 
 flopDecoder : Decoder HandAction
 flopDecoder =
-    map3 Flop
-        (field "Flop" (index 0 cardDecoder))
-        (field "Flop" (index 1 cardDecoder))
-        (field "Flop" (index 2 cardDecoder))
+    JD.map3 Flop
+        (JD.field "Flop" (JD.index 0 cardDecoder))
+        (JD.field "Flop" (JD.index 1 cardDecoder))
+        (JD.field "Flop" (JD.index 2 cardDecoder))
 
 
 flopText : Card -> Card -> Card -> String
@@ -624,8 +611,8 @@ flopText card1 card2 card3 =
 
 turnDecoder : Decoder HandAction
 turnDecoder =
-    map Turn
-        (field "Turn" cardDecoder)
+    JD.map Turn
+        (JD.field "Turn" cardDecoder)
 
 
 turnText : Card -> String
@@ -635,8 +622,8 @@ turnText card =
 
 riverDecoder : Decoder HandAction
 riverDecoder =
-    map River
-        (field "River" cardDecoder)
+    JD.map River
+        (JD.field "River" cardDecoder)
 
 
 riverText : Card -> String
@@ -646,7 +633,7 @@ riverText card =
 
 preFlopDecoder : Decoder HandAction
 preFlopDecoder =
-    succeed PreFlop
+    JD.succeed PreFlop
 
 
 type HandAction
@@ -663,7 +650,7 @@ type HandAction
 
 actionDecoder : Decoder HandAction
 actionDecoder =
-    oneOf
+    JD.oneOf
         [ -- Order is extremely important. The first decoder in the list to return a result successfully
           -- will be the result of this function.
           postDecoder
@@ -711,7 +698,7 @@ actionText action =
 
 actionsDecoder : Decoder (List HandAction)
 actionsDecoder =
-    list actionDecoder
+    JD.list actionDecoder
 
 
 actionsText : List HandAction -> List String
@@ -728,10 +715,10 @@ type alias Hand =
 
 handDecoder : Decoder Hand
 handDecoder =
-    map3 Hand
-        (field "actions" actionsDecoder)
-        (field "stake" amountDecoder)
-        (field "game" string)
+    JD.map3 Hand
+        (JD.field "actions" actionsDecoder)
+        (JD.field "stake" amountDecoder)
+        (JD.field "game" JD.string)
 
 
 handHtml : Hand -> Html msg
@@ -744,7 +731,7 @@ handHtml hand =
 
 handsDecoder : Decoder (List Hand)
 handsDecoder =
-    list handDecoder
+    JD.list handDecoder
 
 
 handsHtml : List Hand -> Html msg
@@ -812,7 +799,7 @@ view model =
 
 decodeHands : String -> List Hand
 decodeHands json =
-    case decodeString handsDecoder json of
+    case JD.decodeString handsDecoder json of
         Ok hands ->
             hands
 
