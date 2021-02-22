@@ -23,15 +23,16 @@ main =
 
 
 type alias Model =
-    { prevActions : List String
-    , nextActions : List String
-    , hands : String
+    { prevActions : List HandAction
+    , nextActions : List HandAction
+    , prevHands : List Hand
+    , nextHands : List Hand
     }
 
 
 init : Model
 init =
-    Model [] [] """[
+    Model [] [] [] (decodeHands """[
         {
             "actions": [
                 {
@@ -426,7 +427,7 @@ init =
                 "integer": 10
             }
         }
-      ]"""
+      ]""")
 
 
 type alias Amount =
@@ -882,6 +883,11 @@ actionsText actions =
     List.map actionText actions
 
 
+actionsHtml : List HandAction -> Html Msg
+actionsHtml actions =
+    ol [] (List.map (\action -> li [] [ text (actionText action) ]) actions)
+
+
 type alias Hand =
     { actions : List HandAction
     , stake : Amount
@@ -897,12 +903,17 @@ handDecoder =
         (JD.field "game" JD.string)
 
 
-handHtml : Hand -> Html msg
+handHtml : Maybe Hand -> Html msg
 handHtml hand =
-    div []
-        [ div [] [ text (hand.game ++ " - " ++ amountText hand.stake) ]
-        , ol [] (List.map (\action -> li [] [ text action ]) (actionsText hand.actions))
-        ]
+    case hand of
+        Just h ->
+            div []
+                [ div [] [ text (h.game ++ " - " ++ amountText h.stake) ]
+                , ol [] (List.map (\action -> li [] [ text action ]) (actionsText h.actions))
+                ]
+
+        Nothing ->
+            div [] [ text "No hand" ]
 
 
 handsDecoder : Decoder (List Hand)
@@ -912,7 +923,7 @@ handsDecoder =
 
 handsHtml : List Hand -> Html msg
 handsHtml hands =
-    ol [] (List.map (\hand -> li [] [ handHtml hand ]) hands)
+    ol [] (List.map (\hand -> li [] [ handHtml hand ]) (List.map (\hand -> Just hand) hands))
 
 
 
@@ -920,18 +931,85 @@ handsHtml hands =
 
 
 type Msg
-    = PreviousAction
+    = PreviousHand
+    | NextHand
+    | PreviousAction
     | NextAction
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
+        PreviousHand ->
+            processPrevHand model
+
+        NextHand ->
+            processNextHand model
+
         PreviousAction ->
             processPrevAction model
 
         NextAction ->
             processNextAction model
+
+
+processPrevHand : Model -> Model
+processPrevHand model =
+    case model.prevHands of
+        [] ->
+            model
+
+        _ ->
+            let
+                prev =
+                    List.take (List.length model.prevHands - 1) model.prevHands
+
+                next =
+                    List.drop (List.length model.prevHands - 1) model.prevHands ++ model.nextHands
+
+                curr =
+                    List.head next
+            in
+            { model
+                | prevHands = prev
+                , nextHands = next
+                , prevActions = []
+                , nextActions =
+                    case curr of
+                        Just hand ->
+                            hand.actions
+
+                        Nothing ->
+                            []
+            }
+
+
+processNextHand : Model -> Model
+processNextHand model =
+    case model.nextHands of
+        [] ->
+            model
+
+        current :: remaining ->
+            let
+                prev =
+                    List.append model.prevHands (List.singleton current)
+
+                next =
+                    List.head remaining
+            in
+            { model
+                | prevHands = prev
+                , nextHands = remaining
+                , prevActions = []
+                , nextActions =
+                    case next of
+                        Just hand ->
+                            hand.actions
+
+                        Nothing ->
+                            []
+            }
 
 
 processPrevAction : Model -> Model
@@ -967,9 +1045,11 @@ processNextAction model =
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick PreviousAction ] [ text "Previous Action" ]
+        [ button [ onClick PreviousHand ] [ text "Previous Hand" ]
+        , button [ onClick NextHand ] [ text "Next Hand" ]
+        , button [ onClick PreviousAction ] [ text "Previous Action" ]
         , button [ onClick NextAction ] [ text "Next Action" ]
-        , handsHtml (decodeHands model.hands)
+        , div [] [ actionsHtml model.nextActions ]
         ]
 
 
