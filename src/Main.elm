@@ -1,10 +1,10 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, button, div, li, text, ul)
+import Html exposing (Html, button, div, li, ol, text)
 import Html.Attributes exposing (action)
 import Html.Events exposing (onClick)
-import Json.Decode as Decode
+import Json.Decode
     exposing
         ( Decoder
         , andThen
@@ -44,11 +44,123 @@ type alias Model =
 
 init : Model
 init =
-    Model [] [ "Fold", "Raise", "Fold", "Call" ] """{
-        "actions": [
+    Model [] [] """[
+        {
+            "actions": [
+                {
+                    "Post": [
+                    "c2tiA/SMUK+T0PsP2rCOGA",
+                    {
+                        "fraction": 0,
+                        "integer": 5
+                    }
+                    ]
+                },
+                {
+                    "Post": [
+                    "YRXyD5Gm275t27NjTtcPtQ",
+                    {
+                        "fraction": 0,
+                        "integer": 10
+                    }
+                    ]
+                },
+                "PreFlop",
+                {
+                    "Fold": "uUr5VW+nLr7e9CueUrQ47g"
+                },
+                {
+                    "Fold": "Gmzktdi7SyRTsixKUD1NIw"
+                },
+                {
+                    "Fold": "yRCsk8TI2PAKL9gB4LG+/A"
+                },
+                {
+                    "Fold": "Bc/GiC55f7zCtQkHe/XPtQ"
+                },
+                {
+                    "Call": [
+                    "c2tiA/SMUK+T0PsP2rCOGA",
+                    {
+                        "fraction": 0,
+                        "integer": 5
+                    }
+                    ]
+                },
+                {
+                    "Check": "YRXyD5Gm275t27NjTtcPtQ"
+                },
+                {
+                    "Flop": [
+                    {
+                        "rank": "King",
+                        "suit": "Club"
+                    },
+                    {
+                        "rank": "Five",
+                        "suit": "Diamond"
+                    },
+                    {
+                        "rank": "Seven",
+                        "suit": "Club"
+                    }
+                    ]
+                },
+                {
+                    "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+                },
+                {
+                    "Check": "YRXyD5Gm275t27NjTtcPtQ"
+                },
+                {
+                    "Turn": {
+                    "rank": "Nine",
+                    "suit": "Spade"
+                    }
+                },
+                {
+                    "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+                },
+                {
+                    "Check": "YRXyD5Gm275t27NjTtcPtQ"
+                },
+                {
+                    "River": {
+                    "rank": "Four",
+                    "suit": "Spade"
+                    }
+                },
+                {
+                    "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+                },
+                {
+                    "Check": "YRXyD5Gm275t27NjTtcPtQ"
+                },
+                {
+                    "Show": [
+                    "c2tiA/SMUK+T0PsP2rCOGA",
+                    {
+                        "rank": "Five",
+                        "suit": "Heart"
+                    },
+                    {
+                        "rank": "Ten",
+                        "suit": "Heart"
+                    }
+                    ]
+                }
+            ],
+            "game": "NoLimitHoldem",
+            "stake": {
+            "fraction": 0,
+            "integer": 10
+            }
+        },
+        {
+            "actions": [
             {
                 "Post": [
-                "c2tiA/SMUK+T0PsP2rCOGA",
+                "YRXyD5Gm275t27NjTtcPtQ",
                 {
                     "fraction": 0,
                     "integer": 5
@@ -57,7 +169,7 @@ init =
             },
             {
                 "Post": [
-                "YRXyD5Gm275t27NjTtcPtQ",
+                "uUr5VW+nLr7e9CueUrQ47g",
                 {
                     "fraction": 0,
                     "integer": 10
@@ -65,9 +177,6 @@ init =
                 ]
             },
             "PreFlop",
-            {
-                "Fold": "uUr5VW+nLr7e9CueUrQ47g"
-            },
             {
                 "Fold": "Gmzktdi7SyRTsixKUD1NIw"
             },
@@ -82,74 +191,131 @@ init =
                 "c2tiA/SMUK+T0PsP2rCOGA",
                 {
                     "fraction": 0,
+                    "integer": 10
+                }
+                ]
+            },
+            {
+                "Call": [
+                "YRXyD5Gm275t27NjTtcPtQ",
+                {
+                    "fraction": 0,
                     "integer": 5
                 }
                 ]
             },
             {
-                "Check": "YRXyD5Gm275t27NjTtcPtQ"
+                "Check": "uUr5VW+nLr7e9CueUrQ47g"
             },
             {
                 "Flop": [
                 {
-                    "rank": "King",
-                    "suit": "Club"
-                },
-                {
-                    "rank": "Five",
+                    "rank": "Two",
                     "suit": "Diamond"
                 },
                 {
-                    "rank": "Seven",
-                    "suit": "Club"
+                    "rank": "Six",
+                    "suit": "Diamond"
+                },
+                {
+                    "rank": "Nine",
+                    "suit": "Heart"
                 }
                 ]
             },
             {
-                "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+                "Check": "YRXyD5Gm275t27NjTtcPtQ"
             },
             {
-                "Check": "YRXyD5Gm275t27NjTtcPtQ"
+                "Check": "uUr5VW+nLr7e9CueUrQ47g"
+            },
+            {
+                "Check": "c2tiA/SMUK+T0PsP2rCOGA"
             },
             {
                 "Turn": {
-                "rank": "Nine",
-                "suit": "Spade"
+                "rank": "Five",
+                "suit": "Heart"
                 }
             },
             {
-                "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+                "Bet": [
+                "YRXyD5Gm275t27NjTtcPtQ",
+                {
+                    "fraction": 0,
+                    "integer": 30
+                }
+                ]
             },
             {
-                "Check": "YRXyD5Gm275t27NjTtcPtQ"
+                "Call": [
+                "uUr5VW+nLr7e9CueUrQ47g",
+                {
+                    "fraction": 0,
+                    "integer": 30
+                }
+                ]
+            },
+            {
+                "Fold": "c2tiA/SMUK+T0PsP2rCOGA"
             },
             {
                 "River": {
-                "rank": "Four",
-                "suit": "Spade"
+                "rank": "King",
+                "suit": "Club"
                 }
             },
             {
-                "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+                "Bet": [
+                "YRXyD5Gm275t27NjTtcPtQ",
+                {
+                    "fraction": 0,
+                    "integer": 40
+                }
+                ]
             },
             {
-                "Check": "YRXyD5Gm275t27NjTtcPtQ"
+                "Call": [
+                "uUr5VW+nLr7e9CueUrQ47g",
+                {
+                    "fraction": 0,
+                    "integer": 40
+                }
+                ]
             },
             {
                 "Show": [
-                "c2tiA/SMUK+T0PsP2rCOGA",
+                "YRXyD5Gm275t27NjTtcPtQ",
                 {
-                    "rank": "Five",
-                    "suit": "Heart"
+                    "rank": "Nine",
+                    "suit": "Club"
                 },
                 {
-                    "rank": "Ten",
+                    "rank": "King",
                     "suit": "Heart"
                 }
                 ]
+            },
+            {
+                "Muck": "uUr5VW+nLr7e9CueUrQ47g"
+            },
+            {
+                "Collect": [
+                "YRXyD5Gm275t27NjTtcPtQ",
+                {
+                    "fraction": 0,
+                    "integer": 167
+                }
+                ]
             }
-        ]
-      }"""
+            ],
+            "game": "NoLimitHoldem",
+            "stake": {
+            "fraction": 0,
+            "integer": 10
+            }
+        }
+      ]"""
 
 
 type alias Amount =
@@ -545,12 +711,45 @@ actionText action =
 
 actionsDecoder : Decoder (List HandAction)
 actionsDecoder =
-    field "actions" (list actionDecoder)
+    list actionDecoder
 
 
 actionsText : List HandAction -> List String
 actionsText actions =
     List.map actionText actions
+
+
+type alias Hand =
+    { actions : List HandAction
+    , stake : Amount
+    , game : String
+    }
+
+
+handDecoder : Decoder Hand
+handDecoder =
+    map3 Hand
+        (field "actions" actionsDecoder)
+        (field "stake" amountDecoder)
+        (field "game" string)
+
+
+handHtml : Hand -> Html msg
+handHtml hand =
+    div []
+        [ div [] [ text (hand.game ++ " - " ++ amountText hand.stake) ]
+        , ol [] (List.map (\action -> li [] [ text action ]) (actionsText hand.actions))
+        ]
+
+
+handsDecoder : Decoder (List Hand)
+handsDecoder =
+    list handDecoder
+
+
+handsHtml : List Hand -> Html msg
+handsHtml hands =
+    ol [] (List.map (\hand -> li [] [ handHtml hand ]) hands)
 
 
 
@@ -607,16 +806,15 @@ view model =
     div []
         [ button [ onClick PreviousAction ] [ text "Previous Action" ]
         , button [ onClick NextAction ] [ text "Next Action" ]
-        , handText model.hands
+        , handsHtml (decodeHands model.hands)
         ]
 
 
-handText : String -> Html msg
-handText hands =
-    case decodeString actionsDecoder hands of
-        Ok actions ->
-            ul []
-                (List.map (\action -> li [] [ text action ]) (actionsText actions))
+decodeHands : String -> List Hand
+decodeHands json =
+    case decodeString handsDecoder json of
+        Ok hands ->
+            hands
 
         Err error ->
-            div [] [ text ("Error decoding hands: " ++ Decode.errorToString error) ]
+            []
