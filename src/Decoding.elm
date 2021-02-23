@@ -30,14 +30,29 @@ amountDecoder =
         (JD.field "fraction" JD.int)
 
 
-
--- TODO Format `fraction` to print two digits (e.g. "$5.20")
--- TODO If `fraction` is 0 then don't print decimal or fraction value
-
-
 amountText : Amount -> String
 amountText amount =
-    "$" ++ String.fromInt amount.integer ++ "." ++ String.fromInt amount.fraction
+    let
+        integer =
+            "$" ++ String.fromInt amount.integer
+    in
+    if amount.fraction > 0 then
+        integer ++ formatFraction amount.fraction
+
+    else
+        integer
+
+
+formatFraction : Int -> String
+formatFraction num =
+    if num == 0 then
+        "00"
+
+    else if num < 10 then
+        "0" ++ String.fromInt num
+
+    else
+        String.fromInt num
 
 
 
