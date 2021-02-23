@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Browser
-import Html exposing (Html, button, div, li, ol, text)
+import Html exposing (Html, button, div, h2, li, ol, text)
 import Html.Attributes exposing (action)
 import Html.Events exposing (onClick)
 import Json.Decode as JD
@@ -15,7 +15,7 @@ import Json.Decode as JD
 
 
 main =
-    Browser.sandbox { init = init, update = update, view = view }
+    Browser.sandbox { init = processNextHand init, update = update, view = view }
 
 
 
@@ -23,16 +23,26 @@ main =
 
 
 type alias Model =
-    { prevActions : List HandAction
-    , nextActions : List HandAction
+    { displayedActions : List HandAction
+    , upcomingActions : List HandAction
     , prevHands : List Hand
     , nextHands : List Hand
     }
 
 
-init : Model
-init =
-    Model [] [] [] (decodeHands """[
+decodeHands : String -> List Hand
+decodeHands json =
+    case JD.decodeString handsDecoder json of
+        Ok hands ->
+            hands
+
+        Err error ->
+            []
+
+
+initialHands : List Hand
+initialHands =
+    decodeHands """[
         {
             "actions": [
                 {
@@ -427,7 +437,13 @@ init =
                 "integer": 10
             }
         }
-      ]""")
+    ]
+    """
+
+
+init : Model
+init =
+    Model [] [] [] initialHands
 
 
 type alias Amount =
@@ -969,18 +985,22 @@ processPrevHand model =
 
                 curr =
                     List.head next
+
+                ( displayed, upcoming ) =
+                    initialActionSplit
+                        (case curr of
+                            Just hand ->
+                                hand.actions
+
+                            Nothing ->
+                                []
+                        )
             in
             { model
                 | prevHands = prev
                 , nextHands = next
-                , prevActions = []
-                , nextActions =
-                    case curr of
-                        Just hand ->
-                            hand.actions
-
-                        Nothing ->
-                            []
+                , displayedActions = displayed
+                , upcomingActions = upcoming
             }
 
 
@@ -997,44 +1017,60 @@ processNextHand model =
 
                 next =
                     List.head remaining
+
+                ( displayed, upcoming ) =
+                    initialActionSplit
+                        (case next of
+                            Just hand ->
+                                hand.actions
+
+                            Nothing ->
+                                []
+                        )
             in
             { model
                 | prevHands = prev
                 , nextHands = remaining
-                , prevActions = []
-                , nextActions =
-                    case next of
-                        Just hand ->
-                            hand.actions
-
-                        Nothing ->
-                            []
+                , displayedActions = displayed
+                , upcomingActions = upcoming
             }
+
+
+initialActionSplit : List HandAction -> ( List HandAction, List HandAction )
+initialActionSplit actions =
+    let
+        displayed =
+            List.take 3 actions
+
+        upcoming =
+            List.drop 3 actions
+    in
+    ( displayed, upcoming )
 
 
 processPrevAction : Model -> Model
 processPrevAction model =
-    case model.prevActions of
+    case model.displayedActions of
         [] ->
             model
 
         _ ->
             { model
-                | prevActions = List.take (List.length model.prevActions - 1) model.prevActions
-                , nextActions = List.drop (List.length model.prevActions - 1) model.prevActions ++ model.nextActions
+                | displayedActions = List.take (List.length model.displayedActions - 1) model.displayedActions
+                , upcomingActions = List.drop (List.length model.displayedActions - 1) model.displayedActions ++ model.upcomingActions
             }
 
 
 processNextAction : Model -> Model
 processNextAction model =
-    case model.nextActions of
+    case model.upcomingActions of
         [] ->
             model
 
         current :: rest ->
             { model
-                | prevActions = List.append model.prevActions (List.singleton current)
-                , nextActions = rest
+                | displayedActions = List.append model.displayedActions (List.singleton current)
+                , upcomingActions = rest
             }
 
 
@@ -1049,15 +1085,8 @@ view model =
         , button [ onClick NextHand ] [ text "Next Hand" ]
         , button [ onClick PreviousAction ] [ text "Previous Action" ]
         , button [ onClick NextAction ] [ text "Next Action" ]
-        , div [] [ actionsHtml model.nextActions ]
+        , div []
+            [ h2 [] [ text "Hand Details" ]
+            , div [] [ actionsHtml model.displayedActions ]
+            ]
         ]
-
-
-decodeHands : String -> List Hand
-decodeHands json =
-    case JD.decodeString handsDecoder json of
-        Ok hands ->
-            hands
-
-        Err error ->
-            []
