@@ -61,6 +61,7 @@ update msg model =
 processPrevHand : Model -> Model
 processPrevHand model =
     case model.prevHands of
+        -- If there are no previous hands then return the model without modification
         [] ->
             model
 
@@ -96,9 +97,15 @@ processPrevHand model =
 processNextHand : Model -> Model
 processNextHand model =
     case model.nextHands of
+        -- If there is no current or next hand them immediately return the model without modification
         [] ->
             model
 
+        -- When there are no hands beyond the currently displayed hand then return the model without modification
+        _ :: [] ->
+            model
+
+        -- Only advance to another hand when there is one available to display
         current :: remaining ->
             let
                 prev =
