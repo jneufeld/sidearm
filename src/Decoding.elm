@@ -1,6 +1,6 @@
 module Decoding exposing (Hand, HandAction, actionsHtml, decodeJson)
 
-import Html exposing (Html, button, div, h2, li, ol, text)
+import Html exposing (Html, li, ol, text)
 import Json.Decode as JD
     exposing
         ( Decoder
@@ -465,11 +465,6 @@ actionsDecoder =
     JD.list actionDecoder
 
 
-actionsText : List HandAction -> List String
-actionsText actions =
-    List.map actionText actions
-
-
 actionsHtml : List HandAction -> Html msg
 actionsHtml actions =
     ol [] (List.map (\action -> li [] [ text (actionText action) ]) actions)
@@ -490,24 +485,6 @@ handDecoder =
         (JD.field "game" JD.string)
 
 
-handHtml : Maybe Hand -> Html msg
-handHtml hand =
-    case hand of
-        Just h ->
-            div []
-                [ div [] [ text (h.game ++ " - " ++ amountText h.stake) ]
-                , ol [] (List.map (\action -> li [] [ text action ]) (actionsText h.actions))
-                ]
-
-        Nothing ->
-            div [] [ text "No hand" ]
-
-
 handsDecoder : Decoder (List Hand)
 handsDecoder =
     JD.list handDecoder
-
-
-handsHtml : List Hand -> Html msg
-handsHtml hands =
-    ol [] (List.map (\hand -> li [] [ handHtml hand ]) (List.map (\hand -> Just hand) hands))
