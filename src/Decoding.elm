@@ -37,7 +37,7 @@ amountText amount =
             "$" ++ String.fromInt amount.integer
     in
     if amount.fraction > 0 then
-        integer ++ formatFraction amount.fraction
+        integer ++ "." ++ formatFraction amount.fraction
 
     else
         integer
