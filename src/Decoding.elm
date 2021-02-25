@@ -192,6 +192,40 @@ showText show =
     show.playerId ++ " shows " ++ cardText show.card1 ++ cardText show.card2
 
 
+type alias Muck =
+    { playerId : String }
+
+
+muckDecoder : Decoder HandAction
+muckDecoder =
+    JD.map PlayerMuck (JD.map Muck (JD.field "Muck" JD.string))
+
+
+muckText : Muck -> String
+muckText muck =
+    muck.playerId ++ " mucks"
+
+
+type alias Collect =
+    { playerId : String
+    , amount : Amount
+    }
+
+
+collectDecoder : Decoder HandAction
+collectDecoder =
+    JD.map PlayerCollect
+        (JD.map2 Collect
+            (JD.field "Collect" (JD.index 0 JD.string))
+            (JD.field "Collect" (JD.index 1 amountDecoder))
+        )
+
+
+collectText : Collect -> String
+collectText collect =
+    collect.playerId ++ " collects" ++ amountText collect.amount
+
+
 type alias Card =
     { rank : Rank
     , suit : Suit
@@ -413,6 +447,8 @@ type HandAction
     | PlayerBet Bet
     | PlayerRaise Raise
     | PlayerShow Show
+    | PlayerMuck Muck
+    | PlayerCollect Collect
     | Flop Card Card Card
     | Turn Card
     | River Card
@@ -431,6 +467,8 @@ actionDecoder =
         , betDecoder
         , raiseDecoder
         , showDecoder
+        , muckDecoder
+        , collectDecoder
         , flopDecoder
         , turnDecoder
         , riverDecoder
@@ -461,6 +499,12 @@ actionText action =
 
         PlayerShow show ->
             showText show
+
+        PlayerMuck muck ->
+            muckText muck
+
+        PlayerCollect collect ->
+            collectText collect
 
         Flop card1 card2 card3 ->
             flopText card1 card2 card3

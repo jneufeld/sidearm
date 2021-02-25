@@ -250,364 +250,386 @@ view model =
 decodeInitialHands : Result String (List Hand)
 decodeInitialHands =
     decodeJson """[
-        {
-            "actions": [
-            {
-                "Post": [
-                "c2tiA/SMUK+T0PsP2rCOGA",
-                {
-                    "fraction": 0,
-                    "integer": 5
-                }
-                ]
-            },
-            {
-                "Post": [
-                "YRXyD5Gm275t27NjTtcPtQ",
-                {
-                    "fraction": 0,
-                    "integer": 10
-                }
-                ]
-            },
-            "PreFlop",
-            {
-                "Fold": "uUr5VW+nLr7e9CueUrQ47g"
-            },
-            {
-                "Fold": "Gmzktdi7SyRTsixKUD1NIw"
-            },
-            {
-                "Fold": "yRCsk8TI2PAKL9gB4LG+/A"
-            },
-            {
-                "Fold": "Bc/GiC55f7zCtQkHe/XPtQ"
-            },
-            {
-                "Call": [
-                "c2tiA/SMUK+T0PsP2rCOGA",
-                {
-                    "fraction": 0,
-                    "integer": 5
-                }
-                ]
-            },
-            {
-                "Check": "YRXyD5Gm275t27NjTtcPtQ"
-            },
-            {
-                "Flop": [
-                {
-                    "rank": "King",
-                    "suit": "Club"
-                },
-                {
-                    "rank": "Five",
-                    "suit": "Diamond"
-                },
-                {
-                    "rank": "Seven",
-                    "suit": "Club"
-                }
-                ]
-            },
-            {
-                "Check": "c2tiA/SMUK+T0PsP2rCOGA"
-            },
-            {
-                "Check": "YRXyD5Gm275t27NjTtcPtQ"
-            },
-            {
-                "Turn": {
-                "rank": "Nine",
-                "suit": "Spade"
-                }
-            },
-            {
-                "Check": "c2tiA/SMUK+T0PsP2rCOGA"
-            },
-            {
-                "Check": "YRXyD5Gm275t27NjTtcPtQ"
-            },
-            {
-                "River": {
-                "rank": "Four",
-                "suit": "Spade"
-                }
-            },
-            {
-                "Check": "c2tiA/SMUK+T0PsP2rCOGA"
-            },
-            {
-                "Check": "YRXyD5Gm275t27NjTtcPtQ"
-            },
-            {
-                "Show": [
-                "c2tiA/SMUK+T0PsP2rCOGA",
-                {
-                    "rank": "Five",
-                    "suit": "Heart"
-                },
-                {
-                    "rank": "Ten",
-                    "suit": "Heart"
-                }
-                ]
-            }
-            ],
-            "game": "NoLimitHoldem",
-            "seats": [
-            {
-                "number": 6,
-                "player_id": "Bc/GiC55f7zCtQkHe/XPtQ",
-                "stack": {
-                "fraction": 50,
-                "integer": 1885
-                }
-            },
-            {
-                "number": 1,
-                "player_id": "c2tiA/SMUK+T0PsP2rCOGA",
-                "stack": {
-                "fraction": 50,
-                "integer": 1105
-                }
-            },
-            {
-                "number": 2,
-                "player_id": "YRXyD5Gm275t27NjTtcPtQ",
-                "stack": {
-                "fraction": 73,
-                "integer": 1061
-                }
-            },
-            {
-                "number": 3,
-                "player_id": "uUr5VW+nLr7e9CueUrQ47g",
-                "stack": {
-                "fraction": 70,
-                "integer": 1213
-                }
-            },
-            {
-                "number": 4,
-                "player_id": "Gmzktdi7SyRTsixKUD1NIw",
-                "stack": {
-                "fraction": 25,
-                "integer": 2580
-                }
-            },
-            {
-                "number": 5,
-                "player_id": "yRCsk8TI2PAKL9gB4LG+/A",
-                "stack": {
-                "fraction": 0,
-                "integer": 1985
-                }
-            }
-            ],
-            "stake": {
+  {
+    "actions": [
+      {
+        "Post": [
+          "c2tiA/SMUK+T0PsP2rCOGA",
+          {
+            "fraction": 0,
+            "integer": 5
+          }
+        ]
+      },
+      {
+        "Post": [
+          "YRXyD5Gm275t27NjTtcPtQ",
+          {
             "fraction": 0,
             "integer": 10
-            }
-        },
-        {
-            "actions": [
-            {
-                "Post": [
-                "QE2Vn7Qn2j+IUR+rOKncTA",
-                {
-                    "fraction": 0,
-                    "integer": 5
-                }
-                ]
-            },
-            {
-                "Post": [
-                "Gmzktdi7SyRTsixKUD1NIw",
-                {
-                    "fraction": 0,
-                    "integer": 10
-                }
-                ]
-            },
-            "PreFlop",
-            {
-                "Raise": [
-                "YRXyD5Gm275t27NjTtcPtQ",
-                {
-                    "fraction": 0,
-                    "integer": 45
-                },
-                {
-                    "fraction": 0,
-                    "integer": 45
-                }
-                ]
-            },
-            {
-                "Call": [
-                "qnIMl/oVStJvdZUJ+6LHgQ",
-                {
-                    "fraction": 0,
-                    "integer": 45
-                }
-                ]
-            },
-            {
-                "Fold": "QE2Vn7Qn2j+IUR+rOKncTA"
-            },
-            {
-                "Raise": [
-                "Gmzktdi7SyRTsixKUD1NIw",
-                {
-                    "fraction": 0,
-                    "integer": 150
-                },
-                {
-                    "fraction": 0,
-                    "integer": 160
-                }
-                ]
-            },
-            {
-                "Call": [
-                "YRXyD5Gm275t27NjTtcPtQ",
-                {
-                    "fraction": 0,
-                    "integer": 115
-                }
-                ]
-            },
-            {
-                "Call": [
-                "qnIMl/oVStJvdZUJ+6LHgQ",
-                {
-                    "fraction": 0,
-                    "integer": 115
-                }
-                ]
-            },
-            {
-                "Flop": [
-                {
-                    "rank": "Ten",
-                    "suit": "Heart"
-                },
-                {
-                    "rank": "Ten",
-                    "suit": "Club"
-                },
-                {
-                    "rank": "Seven",
-                    "suit": "Spade"
-                }
-                ]
-            },
-            {
-                "Check": "Gmzktdi7SyRTsixKUD1NIw"
-            },
-            {
-                "Check": "YRXyD5Gm275t27NjTtcPtQ"
-            },
-            {
-                "Check": "qnIMl/oVStJvdZUJ+6LHgQ"
-            },
-            {
-                "Turn": {
-                "rank": "King",
-                "suit": "Diamond"
-                }
-            },
-            {
-                "Check": "Gmzktdi7SyRTsixKUD1NIw"
-            },
-            {
-                "Check": "YRXyD5Gm275t27NjTtcPtQ"
-            },
-            {
-                "Check": "qnIMl/oVStJvdZUJ+6LHgQ"
-            },
-            {
-                "River": {
-                "rank": "Eight",
-                "suit": "Diamond"
-                }
-            },
-            {
-                "Check": "Gmzktdi7SyRTsixKUD1NIw"
-            },
-            {
-                "Check": "YRXyD5Gm275t27NjTtcPtQ"
-            },
-            {
-                "Check": "qnIMl/oVStJvdZUJ+6LHgQ"
-            },
-            {
-                "Show": [
-                "Gmzktdi7SyRTsixKUD1NIw",
-                {
-                    "rank": "Ace",
-                    "suit": "Spade"
-                },
-                {
-                    "rank": "Queen",
-                    "suit": "Spade"
-                }
-                ]
-            },
-            {
-                "Show": [
-                "YRXyD5Gm275t27NjTtcPtQ",
-                {
-                    "rank": "Ace",
-                    "suit": "Diamond"
-                },
-                {
-                    "rank": "King",
-                    "suit": "Club"
-                }
-                ]
-            }
-            ],
-            "game": "NoLimitHoldem",
-            "seats": [
-            {
-                "number": 2,
-                "player_id": "qnIMl/oVStJvdZUJ+6LHgQ",
-                "stack": {
-                "fraction": 38,
-                "integer": 1797
-                }
-            },
-            {
-                "number": 5,
-                "player_id": "QE2Vn7Qn2j+IUR+rOKncTA",
-                "stack": {
-                "fraction": 40,
-                "integer": 1029
-                }
-            },
-            {
-                "number": 6,
-                "player_id": "Gmzktdi7SyRTsixKUD1NIw",
-                "stack": {
-                "fraction": 75,
-                "integer": 2154
-                }
-            },
-            {
-                "number": 1,
-                "player_id": "YRXyD5Gm275t27NjTtcPtQ",
-                "stack": {
-                "fraction": 27,
-                "integer": 5465
-                }
-            }
-            ],
-            "stake": {
+          }
+        ]
+      },
+      "PreFlop",
+      {
+        "Fold": "uUr5VW+nLr7e9CueUrQ47g"
+      },
+      {
+        "Fold": "Gmzktdi7SyRTsixKUD1NIw"
+      },
+      {
+        "Fold": "yRCsk8TI2PAKL9gB4LG+/A"
+      },
+      {
+        "Fold": "Bc/GiC55f7zCtQkHe/XPtQ"
+      },
+      {
+        "Call": [
+          "c2tiA/SMUK+T0PsP2rCOGA",
+          {
             "fraction": 0,
-            "integer": 10
-            }
+            "integer": 5
+          }
+        ]
+      },
+      {
+        "Check": "YRXyD5Gm275t27NjTtcPtQ"
+      },
+      {
+        "Flop": [
+          {
+            "rank": "King",
+            "suit": "Club"
+          },
+          {
+            "rank": "Five",
+            "suit": "Diamond"
+          },
+          {
+            "rank": "Seven",
+            "suit": "Club"
+          }
+        ]
+      },
+      {
+        "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+      },
+      {
+        "Check": "YRXyD5Gm275t27NjTtcPtQ"
+      },
+      {
+        "Turn": {
+          "rank": "Nine",
+          "suit": "Spade"
         }
+      },
+      {
+        "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+      },
+      {
+        "Check": "YRXyD5Gm275t27NjTtcPtQ"
+      },
+      {
+        "River": {
+          "rank": "Four",
+          "suit": "Spade"
+        }
+      },
+      {
+        "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+      },
+      {
+        "Check": "YRXyD5Gm275t27NjTtcPtQ"
+      },
+      {
+        "Show": [
+          "c2tiA/SMUK+T0PsP2rCOGA",
+          {
+            "rank": "Five",
+            "suit": "Heart"
+          },
+          {
+            "rank": "Ten",
+            "suit": "Heart"
+          }
+        ]
+      },
+      {
+        "Muck": "YRXyD5Gm275t27NjTtcPtQ"
+      },
+      {
+        "Collect": [
+          "c2tiA/SMUK+T0PsP2rCOGA",
+          {
+            "fraction": 0,
+            "integer": 19
+          }
+        ]
+      }
+    ],
+    "game": "NoLimitHoldem",
+    "seats": [
+      {
+        "number": 6,
+        "player_id": "Bc/GiC55f7zCtQkHe/XPtQ",
+        "stack": {
+          "fraction": 50,
+          "integer": 1885
+        }
+      },
+      {
+        "number": 1,
+        "player_id": "c2tiA/SMUK+T0PsP2rCOGA",
+        "stack": {
+          "fraction": 50,
+          "integer": 1105
+        }
+      },
+      {
+        "number": 2,
+        "player_id": "YRXyD5Gm275t27NjTtcPtQ",
+        "stack": {
+          "fraction": 73,
+          "integer": 1061
+        }
+      },
+      {
+        "number": 3,
+        "player_id": "uUr5VW+nLr7e9CueUrQ47g",
+        "stack": {
+          "fraction": 70,
+          "integer": 1213
+        }
+      },
+      {
+        "number": 4,
+        "player_id": "Gmzktdi7SyRTsixKUD1NIw",
+        "stack": {
+          "fraction": 25,
+          "integer": 2580
+        }
+      },
+      {
+        "number": 5,
+        "player_id": "yRCsk8TI2PAKL9gB4LG+/A",
+        "stack": {
+          "fraction": 0,
+          "integer": 1985
+        }
+      }
+    ],
+    "stake": {
+      "fraction": 0,
+      "integer": 10
+    }
+  },
+  {
+    "actions": [
+      {
+        "Post": [
+          "YRXyD5Gm275t27NjTtcPtQ",
+          {
+            "fraction": 0,
+            "integer": 5
+          }
+        ]
+      },
+      {
+        "Post": [
+          "uUr5VW+nLr7e9CueUrQ47g",
+          {
+            "fraction": 0,
+            "integer": 10
+          }
+        ]
+      },
+      "PreFlop",
+      {
+        "Fold": "Gmzktdi7SyRTsixKUD1NIw"
+      },
+      {
+        "Fold": "yRCsk8TI2PAKL9gB4LG+/A"
+      },
+      {
+        "Fold": "Bc/GiC55f7zCtQkHe/XPtQ"
+      },
+      {
+        "Call": [
+          "c2tiA/SMUK+T0PsP2rCOGA",
+          {
+            "fraction": 0,
+            "integer": 10
+          }
+        ]
+      },
+      {
+        "Call": [
+          "YRXyD5Gm275t27NjTtcPtQ",
+          {
+            "fraction": 0,
+            "integer": 5
+          }
+        ]
+      },
+      {
+        "Check": "uUr5VW+nLr7e9CueUrQ47g"
+      },
+      {
+        "Flop": [
+          {
+            "rank": "Two",
+            "suit": "Diamond"
+          },
+          {
+            "rank": "Six",
+            "suit": "Diamond"
+          },
+          {
+            "rank": "Nine",
+            "suit": "Heart"
+          }
+        ]
+      },
+      {
+        "Check": "YRXyD5Gm275t27NjTtcPtQ"
+      },
+      {
+        "Check": "uUr5VW+nLr7e9CueUrQ47g"
+      },
+      {
+        "Check": "c2tiA/SMUK+T0PsP2rCOGA"
+      },
+      {
+        "Turn": {
+          "rank": "Five",
+          "suit": "Heart"
+        }
+      },
+      {
+        "Bet": [
+          "YRXyD5Gm275t27NjTtcPtQ",
+          {
+            "fraction": 0,
+            "integer": 30
+          }
+        ]
+      },
+      {
+        "Call": [
+          "uUr5VW+nLr7e9CueUrQ47g",
+          {
+            "fraction": 0,
+            "integer": 30
+          }
+        ]
+      },
+      {
+        "Fold": "c2tiA/SMUK+T0PsP2rCOGA"
+      },
+      {
+        "River": {
+          "rank": "King",
+          "suit": "Club"
+        }
+      },
+      {
+        "Bet": [
+          "YRXyD5Gm275t27NjTtcPtQ",
+          {
+            "fraction": 0,
+            "integer": 40
+          }
+        ]
+      },
+      {
+        "Call": [
+          "uUr5VW+nLr7e9CueUrQ47g",
+          {
+            "fraction": 0,
+            "integer": 40
+          }
+        ]
+      },
+      {
+        "Show": [
+          "YRXyD5Gm275t27NjTtcPtQ",
+          {
+            "rank": "Nine",
+            "suit": "Club"
+          },
+          {
+            "rank": "King",
+            "suit": "Heart"
+          }
+        ]
+      },
+      {
+        "Muck": "uUr5VW+nLr7e9CueUrQ47g"
+      },
+      {
+        "Collect": [
+          "YRXyD5Gm275t27NjTtcPtQ",
+          {
+            "fraction": 0,
+            "integer": 167
+          }
+        ]
+      }
+    ],
+    "game": "NoLimitHoldem",
+    "seats": [
+      {
+        "number": 1,
+        "player_id": "c2tiA/SMUK+T0PsP2rCOGA",
+        "stack": {
+          "fraction": 50,
+          "integer": 1114
+        }
+      },
+      {
+        "number": 2,
+        "player_id": "YRXyD5Gm275t27NjTtcPtQ",
+        "stack": {
+          "fraction": 73,
+          "integer": 1051
+        }
+      },
+      {
+        "number": 3,
+        "player_id": "uUr5VW+nLr7e9CueUrQ47g",
+        "stack": {
+          "fraction": 70,
+          "integer": 1213
+        }
+      },
+      {
+        "number": 4,
+        "player_id": "Gmzktdi7SyRTsixKUD1NIw",
+        "stack": {
+          "fraction": 25,
+          "integer": 2580
+        }
+      },
+      {
+        "number": 5,
+        "player_id": "yRCsk8TI2PAKL9gB4LG+/A",
+        "stack": {
+          "fraction": 0,
+          "integer": 2000
+        }
+      },
+      {
+        "number": 6,
+        "player_id": "Bc/GiC55f7zCtQkHe/XPtQ",
+        "stack": {
+          "fraction": 50,
+          "integer": 1885
+        }
+      }
+    ],
+    "stake": {
+      "fraction": 0,
+      "integer": 10
+    }
+  }
     ]"""
