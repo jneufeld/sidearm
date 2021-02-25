@@ -7,14 +7,14 @@ import Json.Decode as JD
         )
 
 
-decodeJson : String -> List Hand
+decodeJson : String -> Result String (List Hand)
 decodeJson json =
     case JD.decodeString handsDecoder json of
-        Ok hands ->
-            hands
-
         Err error ->
-            []
+            Err (JD.errorToString error)
+
+        Ok hands ->
+            Ok hands
 
 
 type alias Amount =
@@ -485,19 +485,41 @@ actionsHtml actions =
     ol [] (List.map (\action -> li [] [ text (actionText action) ]) actions)
 
 
+type alias Seat =
+    { number : Int
+    , playerId : String
+    , stack : Amount
+    }
+
+
+seatDecoder : Decoder Seat
+seatDecoder =
+    JD.map3 Seat
+        (JD.field "number" JD.int)
+        (JD.field "player_id" JD.string)
+        (JD.field "stack" amountDecoder)
+
+
+seatsDecoder : Decoder (List Seat)
+seatsDecoder =
+    JD.list seatDecoder
+
+
 type alias Hand =
-    { actions : List HandAction
+    { game : String
     , stake : Amount
-    , game : String
+    , seats : List Seat
+    , actions : List HandAction
     }
 
 
 handDecoder : Decoder Hand
 handDecoder =
-    JD.map3 Hand
-        (JD.field "actions" actionsDecoder)
-        (JD.field "stake" amountDecoder)
+    JD.map4 Hand
         (JD.field "game" JD.string)
+        (JD.field "stake" amountDecoder)
+        (JD.field "seats" seatsDecoder)
+        (JD.field "actions" actionsDecoder)
 
 
 handsDecoder : Decoder (List Hand)
