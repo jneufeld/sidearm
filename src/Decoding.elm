@@ -1,6 +1,6 @@
-module Decoding exposing (Hand, HandAction, actionsHtml, decodeJson)
+module Decoding exposing (Hand, HandAction, actionsHtml, decodeJson, seatsHtml)
 
-import Html exposing (Html, li, ol, text)
+import Html exposing (Html, div, li, ol, text, ul)
 import Json.Decode as JD
     exposing
         ( Decoder
@@ -482,7 +482,10 @@ actionsDecoder =
 
 actionsHtml : List HandAction -> Html msg
 actionsHtml actions =
-    ol [] (List.map (\action -> li [] [ text (actionText action) ]) actions)
+    div []
+        [ text "Action history:"
+        , ol [] (List.map (\action -> li [] [ text (actionText action) ]) actions)
+        ]
 
 
 type alias Seat =
@@ -498,6 +501,19 @@ seatDecoder =
         (JD.field "number" JD.int)
         (JD.field "player_id" JD.string)
         (JD.field "stack" amountDecoder)
+
+
+seatText : Seat -> String
+seatText seat =
+    "Player " ++ String.fromInt seat.number ++ " (" ++ amountText seat.stack ++ ")"
+
+
+seatsHtml : List Seat -> Html msg
+seatsHtml seats =
+    div []
+        [ text "Seated players:"
+        , ul [] (List.map (\seat -> li [] [ text (seatText seat) ]) seats)
+        ]
 
 
 seatsDecoder : Decoder (List Seat)

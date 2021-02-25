@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Browser
-import Decoding exposing (Hand, HandAction, actionsHtml, decodeJson)
+import Decoding exposing (Hand, HandAction, actionsHtml, decodeJson, seatsHtml)
 import Html exposing (Html, button, div, h2, text)
 import Html.Events exposing (onClick)
 
@@ -220,16 +220,31 @@ view model =
             div [] [ text error ]
 
         DecodedHands hands ->
-            div []
-                [ button [ onClick PreviousHand ] [ text "Previous Hand" ]
-                , button [ onClick NextHand ] [ text "Next Hand" ]
-                , button [ onClick PreviousAction ] [ text "Previous Action" ]
-                , button [ onClick NextAction ] [ text "Next Action" ]
-                , div []
-                    [ h2 [] [ text "Hand Details" ]
-                    , div [] [ actionsHtml hands.displayedActions ]
-                    ]
-                ]
+            let
+                currentHand =
+                    List.head hands.nextHands
+
+                navigationDiv =
+                    div []
+                        [ button [ onClick PreviousHand ] [ text "Previous Hand" ]
+                        , button [ onClick NextHand ] [ text "Next Hand" ]
+                        , button [ onClick PreviousAction ] [ text "Previous Action" ]
+                        , button [ onClick NextAction ] [ text "Next Action" ]
+                        ]
+            in
+            case currentHand of
+                Nothing ->
+                    navigationDiv
+
+                Just hand ->
+                    div []
+                        [ navigationDiv
+                        , div []
+                            [ h2 [] [ text "Hand Details" ]
+                            , div [] [ seatsHtml hand.seats ]
+                            , div [] [ actionsHtml hands.displayedActions ]
+                            ]
+                        ]
 
 
 decodeInitialHands : Result String (List Hand)
