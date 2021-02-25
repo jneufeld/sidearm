@@ -8,6 +8,7 @@ import Html.Events exposing (onClick)
 
 
 -- MAIN
+-- TODO This displays the second hand and doesn't display anything if there is only one hand.
 
 
 main =
